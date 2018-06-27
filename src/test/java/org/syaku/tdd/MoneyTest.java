@@ -1,27 +1,38 @@
 package org.syaku.tdd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 /**
- * close $5 * 2 = $10
- * todo Dollar 부작용?
+ * closed $5 * 2 = $10
+ * closed Dollar 부작용?
+ * todo equals()
  *
  * @author Seok Kyun. Choi. 최석균 (Syaku)
  * @since 2018. 6. 27.
  */
 public class MoneyTest {
 
-  @Test(expected = AssertionError.class)
-  public void testMultiplicationError() {
-    Dollar five = new Dollar(5);
-    five.times(2);
-    assertEquals(10, five.amount);
-    // five 5가 아니라 10인 상태
-    five.times(3);
-    // 그래서 5 * 3 이 아닌 10 * 3 이 되고 아래는 추정은 오류가 발생한다.
-    assertEquals(15, five.amount);
+  @Test
+  public void testEqualityError() {
+    // equals 는 기본적인 동작은 this == object 이며 주소값을 비교하게 된다.
+    // new 로 생성되는 객체들은 매번 새로운 주소값을 가지므로 아래의 추적을 오류이면 결과는 false 이다.
+//    assertTrue(new Dollar(5).equals(new Dollar(5)));
+    // 아래와 같이 하면 성공할 수 있다.
+//    Dollar dollar = new Dollar(5);
+//    Dollar dollar2 = dollar;
+//    assertTrue(dollar.equals(dollar2));
+    // 해결책은 equals 를 오버리드(재작성)하여 같은 객체이면서 값이 같은지를 판단해야 한다.
+    // 하지만 이번 장에는 값만 같은지 판단한다.
+  }
+
+  @Test
+  public void testEquality() {
+    assertTrue(new Dollar(5).equals(new Dollar(5)));
+    assertFalse(new Dollar(5).equals(new Dollar(6)));
   }
 
   @Test
@@ -41,6 +52,12 @@ public class MoneyTest {
 
     Dollar times(int multiplier) {
       return new Dollar(amount * multiplier);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      Dollar dollar = (Dollar) obj;
+      return this.amount == dollar.amount;
     }
   }
 }
